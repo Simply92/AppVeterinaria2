@@ -12,7 +12,7 @@ export default function PatientForm() {
 
     useEffect(() => {
         if (activeId) {
-            const activePatient = patients.filter(patient => patient.id === activeId)[0]
+            const activePatient = patients.filter((patient) => patient.id === activeId)[0]
             setValue('name', activePatient.name)
             setValue('caretaker', activePatient.caretaker)
             setValue('date', activePatient.date)
