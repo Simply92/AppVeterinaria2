@@ -2,19 +2,38 @@ import { useForm } from 'react-hook-form'
 import Error from './Error';
 import type { DraftPatient } from '../types';
 import { usePatientStore } from '../store/store';
+import { useEffect } from 'react';
+import { toast } from "react-toastify"
 
 export default function PatientForm() {
-    const { addPatient } = usePatientStore()
+    const { addPatient, activeId, patients, updatePatient } = usePatientStore()
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<DraftPatient>()
+    const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm<DraftPatient>()
+
+    useEffect(() => {
+        if (activeId) {
+            const activePatient = patients.filter(patient => patient.id === activeId)[0]
+            setValue('name', activePatient.name)
+            setValue('caretaker', activePatient.caretaker)
+            setValue('date', activePatient.date)
+            setValue('email', activePatient.email)
+            setValue('symptoms', activePatient.symptoms)
+        }
+    }, [activeId])
 
     const registerPatient = (data: DraftPatient) => {
-        addPatient(data)
+        if (activeId) {
+            updatePatient(data)
+            toast.success('Paciente actualizado correctamente')
+        } else {
+            addPatient(data)
+            toast.success('Paciente registrado correctamente')
+        }
         reset()
     }
 
     return (
-        <div className="md:w-1/2 lg:w-2/5 mx-5">
+        <div className="md:w-1/2 lg:w-2/5 mx-10">
             <h2 className="font-black text-3xl text-center">Seguimiento Pacientes</h2>
 
             <p className="text-lg mt-5 text-center mb-10">
